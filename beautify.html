@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-resolved-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Beautifier</title>
+<link rel="stylesheet" href="css/highlight-theme.css">
+<link rel="stylesheet" href="css/beautify.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="icons/icon48.png" alt="" class="brand-icon">
+    <span class="brand-name">Beautifier</span>
+  </div>
+
+  <div class="controls">
+    <label class="field">
+      <span class="field-label">Language</span>
+      <select id="lang-select" title="Auto-detected on paste — override here any time">
+        <option value="auto">Auto-detect</option>
+      </select>
+    </label>
+
+    <label class="field" id="dialect-field" hidden>
+      <span class="field-label">Dialect</span>
+      <select id="dialect-select">
+        <option value="mysql" selected>MySQL</option>
+        <option value="mariadb">MariaDB</option>
+        <option value="postgresql">PostgreSQL</option>
+        <option value="sqlite">SQLite</option>
+        <option value="transactsql">T-SQL</option>
+        <option value="plsql">PL/SQL</option>
+        <option value="bigquery">BigQuery</option>
+        <option value="snowflake">Snowflake</option>
+        <option value="sql">Standard SQL</option>
+      </select>
+    </label>
+
+    <label class="field" id="keyword-field" hidden>
+      <span class="field-label">Keywords</span>
+      <select id="keyword-select">
+        <option value="upper" selected>UPPER</option>
+        <option value="lower">lower</option>
+        <option value="preserve">Keep as typed</option>
+      </select>
+    </label>
+
+    <label class="field" id="nesting-field" hidden>
+      <span class="field-label">Nesting</span>
+      <select id="nesting-select" title="Colour each sub-query level differently">
+        <option value="colors" selected>Colours</option>
+        <option value="zones">Colours + zones</option>
+        <option value="off">Off</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="field-label">Indent</span>
+      <select id="indent-select">
+        <option value="2" selected>2 spaces</option>
+        <option value="4">4 spaces</option>
+        <option value="8">8 spaces</option>
+        <option value="tab">Tabs</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="actions">
+    <button class="btn primary" id="btn-format" title="Format (Ctrl+Enter)">Format</button>
+    <button class="btn" id="btn-minify" title="Compact to one line">Minify</button>
+    <span class="bar-sep"></span>
+    <button class="btn" id="btn-copy" title="Copy the result (Ctrl+Shift+C)">Copy</button>
+    <button class="btn" id="btn-download" title="Download the result">Download</button>
+    <button class="btn" id="btn-clear" title="Clear both panes">Clear</button>
+    <span class="bar-sep"></span>
+    <div class="theme-picker" id="theme-picker" title="Appearance">
+      <button class="theme-opt" data-theme="light" title="Light">☀</button>
+      <button class="theme-opt" data-theme="dark" title="Dark">☾</button>
+      <button class="theme-opt" data-theme="auto" title="Match system">◐</button>
+    </div>
+  </div>
+</header>
+
+<div class="banner" id="banner" hidden>
+  <span class="banner-icon" id="banner-icon">!</span>
+  <span class="banner-text" id="banner-text"></span>
+  <button class="banner-jump" id="banner-jump" hidden>Go to line</button>
+  <button class="banner-x" id="banner-x">✕</button>
+</div>
+
+<main class="split" id="split">
+  <section class="pane" id="pane-input">
+    <div class="pane-head">
+      <span class="pane-title">Source</span>
+      <span class="pane-meta" id="input-meta"></span>
+    </div>
+    <div class="pane-body">
+      <textarea id="input" spellcheck="false" autocomplete="off" autocapitalize="off"
+        placeholder="Paste JSON, SQL, Java, XML, JavaScript, CSS, YAML…&#10;&#10;It detects the language and formats as soon as you paste."></textarea>
+    </div>
+  </section>
+
+  <div class="splitter" id="splitter" title="Drag to resize — double-click to reset"></div>
+
+  <section class="pane" id="pane-output">
+    <div class="pane-head">
+      <div class="mode-toggle" id="mode-toggle" hidden>
+        <button class="mode-opt" data-mode="render" id="mode-render">Preview</button>
+        <button class="mode-opt" data-mode="beautify" id="mode-beautify">Beautify</button>
+      </div>
+      <span class="pane-title" id="output-title">Formatted</span>
+      <span class="pane-meta" id="output-meta"></span>
+    </div>
+    <div class="pane-body">
+      <div class="code-scroll" id="output-scroll">
+        <div class="code-gutter" id="output-gutter"></div>
+        <pre class="code-pre"><code id="output" class="hljs"></code></pre>
+      </div>
+      <div class="render-scroll" id="render-scroll" hidden></div>
+      <div class="empty-state" id="empty-state">
+        <p>Nothing formatted yet.</p>
+        <p class="dim">Paste into the left pane, or try a sample:</p>
+        <div class="samples" id="samples"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="statusbar">
+  <span id="status-lang" class="chip"></span>
+  <span id="status-engine" class="dim"></span>
+  <span id="nesting-legend" class="legend" hidden></span>
+  <span id="selection-note" class="dim"></span>
+  <span class="spacer"></span>
+  <span id="status-note" class="dim"></span>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="lib/highlight.min.js"></script>
+<script src="lib/marked.min.js"></script>
+<script src="lib/purify.min.js"></script>
+<script src="lib/js-yaml.min.js"></script>
+<script src="lib/sql-formatter.min.js"></script>
+<script src="lib/prettier-standalone.js"></script>
+<script src="lib/prettier-babel.js"></script>
+<script src="lib/prettier-estree.js"></script>
+<script src="lib/prettier-postcss.js"></script>
+<script src="lib/prettier-html.js"></script>
+<script src="lib/prettier-typescript.js"></script>
+<script src="lib/prettier-yaml.js"></script>
+<script src="lib/prettier-markdown.js"></script>
+<script src="lib/prettier-graphql.js"></script>
+
+<script src="js/hljs-salesforce.js"></script>
+<script src="js/languages.js"></script>
+<script src="js/detect.js"></script>
+<script src="js/formatters.js"></script>
+<script src="js/renderers.js"></script>
+<script src="js/sql-nesting.js"></script>
+<script src="js/brackets.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

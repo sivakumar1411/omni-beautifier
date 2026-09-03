@@ -1,0 +1,128 @@
+/* ============================================================
+   Syntax highlighting theme for highlight.js.
+   One theme, driven by variables so it flips with the app's
+   light/dark setting instead of shipping two vendor stylesheets.
+   ============================================================ */
+:root {
+  --hl-comment: #6a737d;
+  --hl-keyword: #d73a49;
+  --hl-string:  #032f62;
+  --hl-number:  #005cc5;
+  --hl-title:   #6f42c1;
+  --hl-attr:    #005cc5;
+  --hl-type:    #e36209;
+  --hl-meta:    #6a737d;
+  --hl-tag:     #22863a;
+  --hl-deleted-bg: #ffeef0;
+  --hl-added-bg:   #e6ffed;
+}
+html[data-resolved-theme="dark"] {
+  --hl-comment: #8b949e;
+  --hl-keyword: #ff7b72;
+  --hl-string:  #a5d6ff;
+  --hl-number:  #79c0ff;
+  --hl-title:   #d2a8ff;
+  --hl-attr:    #79c0ff;
+  --hl-type:    #ffa657;
+  --hl-meta:    #8b949e;
+  --hl-tag:     #7ee787;
+  --hl-deleted-bg: #3c1618;
+  --hl-added-bg:   #12261e;
+}
+
+.hljs { color: inherit; background: transparent; }
+.hljs-comment, .hljs-quote { color: var(--hl-comment); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-doctag,
+.hljs-formula, .hljs-subst { color: var(--hl-keyword); }
+.hljs-string, .hljs-regexp, .hljs-addition, .hljs-attribute,
+.hljs-meta .hljs-string, .hljs-template-tag { color: var(--hl-string); }
+.hljs-number, .hljs-symbol, .hljs-bullet, .hljs-link,
+.hljs-selector-attr, .hljs-selector-pseudo { color: var(--hl-number); }
+.hljs-title, .hljs-section, .hljs-title.class_, .hljs-title.function_,
+.hljs-selector-id, .hljs-selector-class { color: var(--hl-title); }
+.hljs-attr, .hljs-variable, .hljs-template-variable,
+.hljs-property, .hljs-params { color: var(--hl-attr); }
+.hljs-built_in, .hljs-type, .hljs-class, .hljs-name { color: var(--hl-type); }
+.hljs-meta, .hljs-meta .hljs-keyword { color: var(--hl-meta); }
+.hljs-tag { color: var(--hl-tag); }
+.hljs-deletion { background: var(--hl-deleted-bg); }
+.hljs-addition { background: var(--hl-added-bg); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 600; }
+
+/* ============================================================
+   SQL sub-query depth colouring.
+
+   The outer statement keeps the plain theme colours. Every level of
+   sub-query nesting gets its own hue, so an INNER JOIN (SELECT …)
+   reads as two visibly separate queries rather than one wall of red.
+
+   Two shades per level: the strong one for keywords, the soft one for
+   functions and types, so the keyword/function distinction survives.
+   Levels cycle after five, which is deeper than anyone should nest.
+   ============================================================ */
+:root {
+  --sqlq-1: #0550ae;  --sqlq-1s: #3183d8;  --sqlq-1z: rgba(5, 80, 174, .055);
+  --sqlq-2: #0a7b5f;  --sqlq-2s: #24a482;  --sqlq-2z: rgba(10, 123, 95, .06);
+  --sqlq-3: #7c3aed;  --sqlq-3s: #a274f5;  --sqlq-3z: rgba(124, 58, 237, .055);
+  --sqlq-4: #b45309;  --sqlq-4s: #d98324;  --sqlq-4z: rgba(180, 83, 9, .06);
+  --sqlq-5: #be1a72;  --sqlq-5s: #e0559a;  --sqlq-5z: rgba(190, 26, 114, .055);
+
+  --sqlp-1: #7d5bbe;
+  --sqlp-2: #3f8f78;
+  --sqlp-3: #a8763c;
+  --sqlp-4: #4a7fb5;
+  --sqlp-5: #b05a86;
+}
+html[data-resolved-theme="dark"] {
+  --sqlq-1: #79c0ff;  --sqlq-1s: #a9d8ff;  --sqlq-1z: rgba(121, 192, 255, .075);
+  --sqlq-2: #56d4b0;  --sqlq-2s: #8ee7cd;  --sqlq-2z: rgba(86, 212, 176, .075);
+  --sqlq-3: #d2a8ff;  --sqlq-3s: #e5cbff;  --sqlq-3z: rgba(210, 168, 255, .075);
+  --sqlq-4: #ffa657;  --sqlq-4s: #ffc894;  --sqlq-4z: rgba(255, 166, 87, .075);
+  --sqlq-5: #ff9bd2;  --sqlq-5s: #ffc2e4;  --sqlq-5z: rgba(255, 155, 210, .075);
+
+  --sqlp-1: #b392f0;
+  --sqlp-2: #6fbfa8;
+  --sqlp-3: #d9a76c;
+  --sqlp-4: #6fa8dc;
+  --sqlp-5: #d98fb8;
+}
+
+/* Keywords inside a sub-query take that level's colour. The depth span sits
+   inside the highlight.js span, so a descendant selector reaches it. */
+.hljs-keyword .sqlq-1, .hljs-literal .sqlq-1 { color: var(--sqlq-1); }
+.hljs-keyword .sqlq-2, .hljs-literal .sqlq-2 { color: var(--sqlq-2); }
+.hljs-keyword .sqlq-3, .hljs-literal .sqlq-3 { color: var(--sqlq-3); }
+.hljs-keyword .sqlq-4, .hljs-literal .sqlq-4 { color: var(--sqlq-4); }
+.hljs-keyword .sqlq-5, .hljs-literal .sqlq-5 { color: var(--sqlq-5); }
+
+/* Functions and types follow the same hue, one shade softer. */
+.hljs-built_in .sqlq-1, .hljs-type .sqlq-1, .hljs-title .sqlq-1, .hljs-name .sqlq-1 { color: var(--sqlq-1s); }
+.hljs-built_in .sqlq-2, .hljs-type .sqlq-2, .hljs-title .sqlq-2, .hljs-name .sqlq-2 { color: var(--sqlq-2s); }
+.hljs-built_in .sqlq-3, .hljs-type .sqlq-3, .hljs-title .sqlq-3, .hljs-name .sqlq-3 { color: var(--sqlq-3s); }
+.hljs-built_in .sqlq-4, .hljs-type .sqlq-4, .hljs-title .sqlq-4, .hljs-name .sqlq-4 { color: var(--sqlq-4s); }
+.hljs-built_in .sqlq-5, .hljs-type .sqlq-5, .hljs-title .sqlq-5, .hljs-name .sqlq-5 { color: var(--sqlq-5s); }
+
+/* The parentheses that bracket a sub-query, in that sub-query's colour. */
+.sql-qparen { font-weight: 700; }
+.sql-qparen.sqlq-1 { color: var(--sqlq-1); }
+.sql-qparen.sqlq-2 { color: var(--sqlq-2); }
+.sql-qparen.sqlq-3 { color: var(--sqlq-3); }
+.sql-qparen.sqlq-4 { color: var(--sqlq-4); }
+.sql-qparen.sqlq-5 { color: var(--sqlq-5); }
+
+/* Grouping parentheses get matched rainbow colours instead, so the
+   (((a) AND (b))) pile-ups in a WHERE clause can still be paired by eye. */
+.sqlp-1 { color: var(--sqlp-1); }
+.sqlp-2 { color: var(--sqlp-2); }
+.sqlp-3 { color: var(--sqlp-3); }
+.sqlp-4 { color: var(--sqlp-4); }
+.sqlp-5 { color: var(--sqlp-5); }
+
+/* A faint wash behind each nested query marks its extent without competing
+   with the text. Opt in with the Nesting control's "Zones" setting. */
+html[data-sql-zones="on"] .sqlq-1 { background: var(--sqlq-1z); }
+html[data-sql-zones="on"] .sqlq-2 { background: var(--sqlq-2z); }
+html[data-sql-zones="on"] .sqlq-3 { background: var(--sqlq-3z); }
+html[data-sql-zones="on"] .sqlq-4 { background: var(--sqlq-4z); }
+html[data-sql-zones="on"] .sqlq-5 { background: var(--sqlq-5z); }

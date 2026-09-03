@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Beautifier \u2014 format and highlight anything you paste",
+  "version": "1.0.0",
+  "description": "Paste JSON, MySQL, Java, XML, JS/TS, CSS, YAML and more into a two-pane page: auto-detects the language, formats it and colours the syntax.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Open Beautifier",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "contextMenus"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+B",
+        "mac": "Alt+B"
+      },
+      "description": "Open Beautifier next to the current tab"
+    }
+  }
+}
